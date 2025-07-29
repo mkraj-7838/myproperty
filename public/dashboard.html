@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyProperty - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f4ff',
+                            100: '#e3f2fd',
+                            500: '#667eea',
+                            600: '#5a6fd8',
+                            700: '#764ba2'
+                        }
+                    },
+                    animation: {
+                        'slide-up': 'slideUp 0.6s ease-out',
+                        'spin': 'spin 1s linear infinite',
+                        'modal-slide': 'modalSlideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                        'fade-in': 'fadeIn 0.3s ease-out',
+                        'slide-down': 'slideDown 0.3s ease-out',
+                        'pulse-scale': 'pulse 2s ease-in-out infinite'
+                    },
+                    keyframes: {
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(30px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        modalSlideIn: {
+                            '0%': { opacity: '0', transform: 'scale(0.9) translateY(-20px)' },
+                            '100%': { opacity: '1', transform: 'scale(1) translateY(0)' }
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        slideDown: {
+                            '0%': { opacity: '0', transform: 'translateY(-20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        pulse: {
+                            '0%, 100%': { transform: 'scale(1)' },
+                            '50%': { transform: 'scale(1.05)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: #f5f7fa;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .condition-empty {
+            background: #ffeaa7;
+            color: #d63031;
+        }
+        .condition-semi-furnished {
+            background: #74b9ff;
+            color: #0984e3;
+        }
+        .condition-fully-furnished {
+            background: #55a3ff;
+            color: #0056b3;
+        }
+        
+        /* Custom animations */
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes modalSlide {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+        
+        .animate-slide-up {
+            animation: slideUp 0.4s ease-out;
+        }
+        
+        .animate-modal-slide {
+            animation: modalSlide 0.3s ease-out;
+        }
+        
+        .animate-pulse-hover:hover {
+            animation: pulse 0.6s ease-in-out;
+        }
+        
+        /* Custom utilities */
+        .hover\:scale-102:hover {
+            transform: scale(1.02);
+        }
+        
+        .hover\:scale-110:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Touch-friendly improvements */
+        @media (max-width: 768px) {
+            .touch-target {
+                min-height: 44px;
+                min-width: 44px;
+            }
+        }
+        
+        /* User menu visibility fix */
+        .user-menu:hover #userDropdown,
+        .user-menu #userDropdown.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Header -->
+    <header class="gradient-bg text-white shadow-lg sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+            <div class="flex items-center gap-3">
+                <i class="fas fa-map-marked-alt text-2xl sm:text-3xl"></i>
+                <h1 class="text-xl sm:text-2xl font-bold">MyProperty</h1>
+            </div>
+            <div class="flex gap-3 relative">
+                <button class="bg-white bg-opacity-20 border border-white border-opacity-30 p-2 rounded-lg text-sm cursor-pointer transition-all duration-300 hidden sm:flex items-center gap-2 hover:bg-opacity-30 hover:-translate-y-0.5" onclick="showAllLands()">
+                    <i class="fas fa-list"></i>
+                    <span class="hidden md:inline">All Lands</span>
+                </button>
+                <div class="relative user-menu">
+                    <button class="bg-white bg-opacity-20 border border-white border-opacity-30 p-2 rounded-full text-base cursor-pointer transition-all duration-300 w-10 h-10 flex items-center justify-center hover:bg-opacity-30 hover:-translate-y-0.5" onclick="toggleUserMenu()">
+                        <i class="fas fa-user"></i>
+                    </button>
+                    <div class="absolute top-12 right-0 bg-white rounded-lg shadow-2xl min-w-40 opacity-0 invisible -translate-y-2 transition-all duration-300 z-50" id="userDropdown">
+                        <button class="w-full px-4 py-3 text-left text-gray-800 cursor-pointer transition-all duration-200 flex items-center gap-2 text-sm rounded-t-lg hover:bg-gray-50 hover:text-primary-500 sm:hidden" onclick="showAllLands()">
+                            <i class="fas fa-list"></i>
+                            All Lands
+                        </button>
+                        <button class="w-full px-4 py-3 text-left text-gray-800 cursor-pointer transition-all duration-200 flex items-center gap-2 text-sm hover:bg-gray-50 hover:text-primary-500" onclick="exportData()">
+                            <i class="fas fa-download"></i>
+                            Export CSV
+                        </button>
+                        <button class="w-full px-4 py-3 text-left text-gray-800 cursor-pointer transition-all duration-200 flex items-center gap-2 text-sm rounded-b-lg hover:bg-gray-50 hover:text-primary-500" onclick="logout()">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="py-6 sm:py-10 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-8 sm:mb-10">
+                <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-2">Land Management Dashboard</h2>
+                <p class="text-gray-600 text-sm sm:text-base">Manage your land properties by area ranges</p>
+            </div>
+
+            <!-- Dashboard Grid - Mobile: 2 columns, Tablet: 3 columns, Desktop: 4 columns -->
+            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-8 sm:mb-10" id="dashboardGrid">
+                <!-- Tiles will be populated by JavaScript -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Floating Add Button -->
+    <button class="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 w-12 h-12 sm:w-15 sm:h-15 gradient-bg text-white border-none rounded-full text-lg sm:text-2xl cursor-pointer shadow-2xl transition-all duration-300 z-40 hover:scale-110 hover:shadow-primary-400" onclick="openAddModal()">
+        <i class="fas fa-plus"></i>
+    </button>
+
+    <!-- Add/Edit Land Modal -->
+    <div id="landModal" class="fixed inset-0 bg-black bg-opacity-50 z-[70] hidden justify-center items-center p-4 sm:p-5">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto animate-modal-slide">
+            <div class="px-4 sm:px-6 py-4 sm:py-6 border-b border-gray-200 flex justify-between items-center gradient-bg text-white rounded-t-xl">
+                <h3 class="text-lg sm:text-xl font-semibold" id="modalTitle">Add New Land</h3>
+                <button class="bg-white bg-opacity-20 text-white border-none w-8 h-8 sm:w-9 sm:h-9 rounded-full cursor-pointer flex items-center justify-center transition-all duration-300 hover:bg-opacity-30" onclick="closeModal()">
+                    <i class="fas fa-times text-sm sm:text-base"></i>
+                </button>
+            </div>
+            
+            <form id="landForm" class="p-4 sm:p-6">
+                <input type="hidden" id="landId" name="landId">
+                
+                <div class="mb-4 sm:mb-6 relative">
+                    <label for="name" class="block mb-2 font-semibold text-gray-600 flex items-center gap-2 text-sm sm:text-base">
+                        <i class="fas fa-tag"></i>
+                        Property Name
+                    </label>
+                    <input type="text" id="name" name="name" required placeholder="Enter property name"
+                           class="w-full px-3 sm:px-4 py-2 sm:py-3 border-2 border-gray-200 rounded-lg text-sm sm:text-base transition-all duration-300 bg-white focus:outline-none focus:border-primary-500 focus:shadow-lg focus:shadow-primary-100">
+                </div>
+                
+                <div class="mb-4 sm:mb-6 relative">
+                    <label for="landmark" class="block mb-2 font-semibold text-gray-600 flex items-center gap-2 text-sm sm:text-base">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Landmark
+                    </label>
+                    <input type="text" id="landmark" name="landmark" required placeholder="Enter nearby landmark"
+                           class="w-full px-3 sm:px-4 py-2 sm:py-3 border-2 border-gray-200 rounded-lg text-sm sm:text-base transition-all duration-300 bg-white focus:outline-none focus:border-primary-500 focus:shadow-lg focus:shadow-primary-100">
+                </div>
+                
+                <div class="mb-4 sm:mb-6 relative">
+                    <label for="areaRange" class="block mb-2 font-semibold text-gray-600 flex items-center gap-2 text-sm sm:text-base">
+                        <i class="fas fa-ruler-combined"></i>
+                        Area Range
+                    </label>
+                    <select id="areaRange" name="areaRange" required
+                            class="w-full px-3 sm:px-4 py-2 sm:py-3 border-2 border-gray-200 rounded-lg text-sm sm:text-base transition-all duration-300 bg-white focus:outline-none focus:border-primary-500 focus:shadow-lg focus:shadow-primary-100">
+                        <option value="">Select Area Range</option>
+                        <option value="0-25 gaj">0-25 gaj</option>
+                        <option value="25-50 gaj">25-50 gaj</option>
+                        <option value="50-75 gaj">50-75 gaj</option>
+                        <option value="75-100 gaj">75-100 gaj</option>
+                        <option value="100-250 gaj">100-250 gaj</option>
+                        <option value="250-500 gaj">250-500 gaj</option>
+                        <option value="500-750 gaj">500-750 gaj</option>
+                        <option value="750-1000 gaj">750-1000 gaj</option>
+                    </select>
+                </div>
+                
+                <div class="mb-4 sm:mb-6 relative">
+                    <label for="condition" class="block mb-2 font-semibold text-gray-600 flex items-center gap-2 text-sm sm:text-base">
+                        <i class="fas fa-home"></i>
+                        Condition
+                    </label>
+                    <select id="condition" name="condition" required
+                            class="w-full px-3 sm:px-4 py-2 sm:py-3 border-2 border-gray-200 rounded-lg text-sm sm:text-base transition-all duration-300 bg-white focus:outline-none focus:border-primary-500 focus:shadow-lg focus:shadow-primary-100">
+                        <option value="">Select Condition</option>
+                        <option value="Empty">Empty</option>
+                        <option value="Semi-Furnished">Semi-Furnished</option>
+                        <option value="Fully Furnished">Fully Furnished</option>
+                    </select>
+                </div>
+                
+                <div class="mb-4 sm:mb-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <label class="font-semibold text-gray-600 flex items-center gap-2 text-sm sm:text-base">
+                            <i class="fas fa-map-pin"></i>
+                            Coordinates
+                        </label>
+                        <button type="button" id="locationBtn" class="bg-green-500 text-white py-1.5 px-3 border-none rounded-md text-xs font-semibold cursor-pointer transition-all duration-300 hover:bg-green-600 hover:-translate-y-0.5" onclick="getCurrentLocation()">
+                            <i class="fas fa-location-arrow mr-1"></i>
+                            Auto Detect
+                        </button>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="relative">
+                            <input type="number" id="latitude" name="latitude" step="any" required placeholder="Latitude"
+                                   class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm transition-all duration-300 bg-white focus:outline-none focus:border-primary-500 focus:shadow-lg focus:shadow-primary-100">
+                        </div>
+                        
+                        <div class="relative">
+                            <input type="number" id="longitude" name="longitude" step="any" required placeholder="Longitude"
+                                   class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm transition-all duration-300 bg-white focus:outline-none focus:border-primary-500 focus:shadow-lg focus:shadow-primary-100">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-3 mt-4 sm:mt-6">
+                    <button type="button" class="bg-gray-500 text-white py-2 sm:py-3 px-4 sm:px-6 border-none rounded-lg text-sm font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center gap-2 hover:bg-gray-600 hover:-translate-y-0.5" onclick="closeModal()">
+                        <i class="fas fa-times"></i>
+                        Cancel
+                    </button>
+                    <button type="submit" class="gradient-bg text-white py-2 sm:py-3 px-4 sm:px-6 border-none rounded-lg text-sm font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-primary-300 hover:-translate-y-0.5">
+                        <i class="fas fa-save"></i>
+                        <span id="submitBtnText">Add Land</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Category Details Modal -->
+    <div id="categoryModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden justify-center items-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden animate-modal-slide">
+            <div class="px-4 sm:px-6 py-4 border-b border-gray-200 flex justify-between items-center gradient-bg text-white rounded-t-xl">
+                <h3 class="text-lg sm:text-xl font-semibold" id="categoryModalTitle">Category Details</h3>
+                <button class="bg-white bg-opacity-20 text-white border-none w-8 h-8 sm:w-9 sm:h-9 rounded-full cursor-pointer flex items-center justify-center transition-all duration-300 hover:bg-opacity-30" onclick="closeCategoryModal()">
+                    <i class="fas fa-times text-sm sm:text-base"></i>
+                </button>
+            </div>
+            
+            <div class="p-4 sm:p-6 overflow-y-auto max-h-[calc(90vh-80px)]">
+                <div id="categoryTableContainer" class="overflow-x-auto">
+                    <table class="w-full border-collapse">
+                        <thead>
+                            <tr class="bg-gray-50">
+                                <th class="text-left py-3 px-2 sm:px-4 font-semibold text-gray-600 text-xs sm:text-sm uppercase tracking-wide border-b border-gray-200">Property</th>
+                                <th class="text-left py-3 px-2 sm:px-4 font-semibold text-gray-600 text-xs sm:text-sm uppercase tracking-wide border-b border-gray-200 hidden sm:table-cell">Landmark</th>
+                                <th class="text-left py-3 px-2 sm:px-4 font-semibold text-gray-600 text-xs sm:text-sm uppercase tracking-wide border-b border-gray-200">Condition</th>
+                                <th class="text-center py-3 px-2 sm:px-4 font-semibold text-gray-600 text-xs sm:text-sm uppercase tracking-wide border-b border-gray-200">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="categoryTableBody">
+                            <!-- Table rows will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- All Lands Modal -->
+    <div id="allLandsModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden justify-center items-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-hidden animate-modal-slide">
+            <div class="px-4 sm:px-6 py-4 border-b border-gray-200 flex justify-between items-center gradient-bg text-white rounded-t-xl">
+                <h3 class="text-lg sm:text-xl font-semibold">All Lands by Area Range</h3>
+                <button class="bg-white bg-opacity-20 text-white border-none w-8 h-8 sm:w-9 sm:h-9 rounded-full cursor-pointer flex items-center justify-center transition-all duration-300 hover:bg-opacity-30" onclick="closeAllLandsModal()">
+                    <i class="fas fa-times text-sm sm:text-base"></i>
+                </button>
+            </div>
+            
+            <div class="p-4 sm:p-6 overflow-y-auto max-h-[calc(90vh-80px)]">
+                <div id="allLandsContainer">
+                    <!-- All lands content will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="fixed inset-0 bg-black bg-opacity-50 z-[80] hidden justify-center items-center p-4 sm:p-5">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md text-center animate-modal-slide">
+            <div class="mt-6 mb-4">
+                <i class="fas fa-exclamation-triangle text-4xl sm:text-5xl text-yellow-500"></i>
+            </div>
+            <h3 class="text-lg sm:text-xl mb-3 text-gray-800" id="confirmTitle">Confirm Action</h3>
+            <p class="text-gray-600 mb-6 leading-relaxed px-4 sm:px-6 text-sm sm:text-base" id="confirmMessage">Are you sure you want to perform this action?</p>
+            <div class="flex gap-3 justify-center px-4 sm:px-6 pb-6">
+                <button class="bg-gray-500 text-white py-2 sm:py-3 px-4 sm:px-6 border-none rounded-lg text-sm font-semibold cursor-pointer transition-all duration-300 hover:bg-gray-600 hover:-translate-y-0.5" onclick="closeConfirmModal()">Cancel</button>
+                <button class="bg-red-500 text-white py-2 sm:py-3 px-4 sm:px-6 border-none rounded-lg text-sm font-semibold cursor-pointer transition-all duration-300 hover:bg-red-600 hover:-translate-y-0.5" id="confirmBtn">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed top-5 right-5 px-6 py-4 rounded-lg text-white font-medium z-50 transform translate-x-96 transition-transform duration-300 shadow-lg border-l-4"></div>
+    
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="fixed inset-0 bg-black bg-opacity-50 hidden justify-center items-center z-50">
+        <div class="w-12 h-12 border-4 border-gray-300 border-t-primary-500 rounded-full animate-spin"></div>
+    </div>
+
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

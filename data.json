@@ -1,0 +1,43 @@
+{
+  "users": [
+    {
+      "username": "myproperty",
+      "password": "$2a$10$e04S6/AWXBv8HYPNIjtgWuJ2dUSRSksm0xSGIsfmz8D3CYeoxmrBi"
+    }
+  ],
+  "lands": [
+    {
+      "id": "1753776016837",
+      "areaRange": "100-250 gaj",
+      "condition": "Semi-Furnished",
+      "name": "Delhi Central Plot",
+      "landmark": "Near India Gate",
+      "latitude": 28.6139,
+      "longitude": 77.209,
+      "mapLink": "https://www.google.com/maps?q=28.6139,77.209",
+      "createdAt": "2025-07-29T08:00:16.838Z"
+    },
+    {
+      "id": "1753778251468",
+      "areaRange": "75-100 gaj",
+      "condition": "Fully Furnished",
+      "name": "Mohit Home",
+      "landmark": "near chowk",
+      "latitude": 28.627735,
+      "longitude": 77.338369,
+      "mapLink": "https://www.google.com/maps?q=28.627735,77.338369",
+      "createdAt": "2025-07-29T08:37:31.468Z"
+    },
+    {
+      "id": "1753778475920",
+      "areaRange": "50-75 gaj",
+      "condition": "Semi-Furnished",
+      "name": "vishal home",
+      "landmark": "near alipur",
+      "latitude": 28.627735,
+      "longitude": 77.338369,
+      "mapLink": "https://www.google.com/maps?q=28.627735,77.338369",
+      "createdAt": "2025-07-29T08:41:15.920Z"
+    }
+  ]
+}
